@@ -1,3 +1,4 @@
+using arcteryxScraper;
 using arcteryxScraper.Components;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,5 +30,14 @@ app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(arcteryxScraper.Client._Imports).Assembly);
+
+// Fetch HTML before starting the web server
+var fetcher = new HtmlFetcher();
+var htmlContent = await fetcher.FetchHtmlAsync("cz", "en", "mens");
+
+// Parse the products from the HTML
+var parser = new HtmlParser();
+var products = parser.ParseProducts(htmlContent);
+parser.DisplayProducts(products);
 
 app.Run();

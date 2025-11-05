@@ -10,6 +10,7 @@
     <ItemGroup>
         <ProjectReference Include="..\arcteryxScraper.Client\arcteryxScraper.Client.csproj"/>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.10"/>
+        <PackageReference Include="PuppeteerSharp" Version="20.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
