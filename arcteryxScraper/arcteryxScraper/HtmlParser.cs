@@ -57,6 +57,15 @@ public class HtmlParser
             Name = nameMatch.Groups[1].Value.Trim()
         };
 
+        // Extract product URL - pattern: qa--product-tile__link" href="/cz/en/shop/..."
+        var urlPattern = @"qa--product-tile__link""\s+href=""([^""]+)""";
+        var urlMatch = Regex.Match(tileHtml, urlPattern);
+
+        if (urlMatch.Success)
+        {
+            product.Url = urlMatch.Groups[1].Value.Trim();
+        }
+
         // Extract original price - pattern: qa--product-tile__original-price">€XXX.XX</span>
         var originalPricePattern = @"qa--product-tile__original-price"">€([\d,]+\.\d{2})</span>";
         var originalPriceMatch = Regex.Match(tileHtml, originalPricePattern);
