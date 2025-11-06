@@ -1,11 +1,16 @@
 using arcteryxScraper;
-using arcteryxScraper.Components;
+using arcteryxScraper.Components;using arcteryxScraper.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
+
+// Register services
+builder.Services.AddScoped<HtmlFetcher>();
+builder.Services.AddScoped<HtmlParser>();
 
 var app = builder.Build();
 
@@ -23,21 +28,12 @@ else
 
 app.UseHttpsRedirection();
 
-
 app.UseAntiforgery();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
+    .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(arcteryxScraper.Client._Imports).Assembly);
-
-// Fetch HTML before starting the web server
-var fetcher = new HtmlFetcher();
-var htmlContent = await fetcher.FetchHtmlAsync("cz", "en", "mens");
-
-// Parse the products from the HTML
-var parser = new HtmlParser();
-var products = parser.ParseProducts(htmlContent);
-parser.DisplayProducts(products);
 
 app.Run();

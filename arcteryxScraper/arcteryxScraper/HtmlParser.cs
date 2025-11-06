@@ -105,19 +105,4 @@ public class HtmlParser
         var cleanPrice = priceString.Replace(",", "");
         return decimal.Parse(cleanPrice);
     }
-
-    /// <summary>
-    /// Displays all products in a formatted way
-    /// </summary>
-    public void DisplayProducts(List<Product> products)
-    {
-        Console.WriteLine($"\n{'='} PARSED PRODUCTS {'='}\n");
-        Console.WriteLine($"Total products found: {products.Count}\n");
-
-        foreach (var product in products)
-        {
-            Console.WriteLine(product.ToString());
-            Console.WriteLine();
-        }
-    }
 }
