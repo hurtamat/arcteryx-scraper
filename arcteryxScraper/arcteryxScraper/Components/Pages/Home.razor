@@ -2,6 +2,133 @@
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="container mt-5">
+    <h1 class="display-4">Arc'teryx Scraper Dashboard</h1>
+    <p class="lead">Showcasing Bootstrap theme components</p>
 
-Welcome to your new app.
+    <div class="alert alert-primary" role="alert">
+        This is a primary alert with some sample text!
+    </div>
+
+    <div class="alert alert-success" role="alert">
+        Successfully loaded Bootstrap theme!
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Product Scraping</h5>
+                    <p class="card-text">Monitor and scrape Arc'teryx products with real-time updates.</p>
+                    <button class="btn btn-primary">Start Scraping</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Data Analysis</h5>
+                    <p class="card-text">Analyze product trends and pricing information.</p>
+                    <button class="btn btn-success">View Analytics</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Settings</h5>
+                    <p class="card-text">Configure scraping parameters and preferences.</p>
+                    <button class="btn btn-secondary">Configure</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-8">
+            <h3>Recent Products</h3>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Product</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>Beta AR Jacket</td>
+                        <td>$575.00</td>
+                        <td><span class="badge bg-success">In Stock</span></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">2</th>
+                        <td>Atom LT Hoody</td>
+                        <td>$299.00</td>
+                        <td><span class="badge bg-warning">Low Stock</span></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">3</th>
+                        <td>Gamma MX Hoody</td>
+                        <td>$379.00</td>
+                        <td><span class="badge bg-danger">Out of Stock</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-md-4">
+            <h3>Quick Actions</h3>
+            <div class="list-group">
+                <a href="#" class="list-group-item list-group-item-action">
+                    Refresh Data
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    Export Results
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    View Logs
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    System Status
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <h3>Button Styles</h3>
+        <button class="btn btn-primary me-2">Primary</button>
+        <button class="btn btn-secondary me-2">Secondary</button>
+        <button class="btn btn-success me-2">Success</button>
+        <button class="btn btn-danger me-2">Danger</button>
+        <button class="btn btn-warning me-2">Warning</button>
+        <button class="btn btn-info me-2">Info</button>
+        <button class="btn btn-light me-2">Light</button>
+        <button class="btn btn-dark">Dark</button>
+    </div>
+
+    <div class="mt-4">
+        <h3>Form Example</h3>
+        <form>
+            <div class="mb-3">
+                <label for="exampleInput" class="form-label">Search Product</label>
+                <input type="text" class="form-control" id="exampleInput" placeholder="Enter product name...">
+            </div>
+            <div class="mb-3">
+                <label for="exampleSelect" class="form-label">Category</label>
+                <select class="form-select" id="exampleSelect">
+                    <option selected>Choose...</option>
+                    <option value="1">Jackets</option>
+                    <option value="2">Pants</option>
+                    <option value="3">Accessories</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+</div>

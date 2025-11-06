@@ -144,10 +144,10 @@ public class HtmlFetcher
                 stableHeightCount++;
                 Console.WriteLine($"Page height stable ({stableHeightCount}/3)");
 
-                // If height hasn't changed for 3 consecutive checks, we've reached the bottom
-                if (stableHeightCount >= 3)
+                // If height hasn't changed for 2 consecutive checks, we've reached the bottom
+                if (stableHeightCount >= 2)
                 {
-                    Console.WriteLine("Reached bottom of page - no new content loaded after 3 checks.");
+                    Console.WriteLine("Reached bottom of page - no new content loaded after 2 checks.");
                     break;
                 }
             }
