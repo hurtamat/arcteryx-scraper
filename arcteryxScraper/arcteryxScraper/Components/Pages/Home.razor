@@ -18,17 +18,17 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label for="countrySelect" class="form-label">Country</label>
-                    <select class="form-select" id="countrySelect" @bind="selectedCountry">
+                    <select class="form-select" id="countrySelect" @bind="_selectedCountry">
                         @foreach (var country in Enum.GetValues<InputCountry>())
                         {
-                            <option value="@country">@country</option>
+                            <option value="@country">@GetCountryLabel(country)</option>
                         }
                     </select>
                 </div>
 
                 <div class="col-md-6 mb-3">
                     <label for="genderSelect" class="form-label">Gender</label>
-                    <select class="form-select" id="genderSelect" @bind="selectedGender">
+                    <select class="form-select" id="genderSelect" @bind="_selectedGender">
                         @foreach (var gender in Enum.GetValues<InputGender>())
                         {
                             <option value="@gender">@gender</option>
@@ -37,8 +37,8 @@
                 </div>
             </div>
 
-            <button class="btn btn-primary" @onclick="SearchProducts" disabled="@isLoading">
-                @if (isLoading)
+            <button class="btn btn-primary" @onclick="SearchProducts" disabled="@_isLoading">
+                @if (_isLoading)
                 {
                     <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                     <span>Searching...</span>
@@ -48,22 +48,25 @@
                     <span>Search Products</span>
                 }
             </button>
+            <button class="btn btn-secondary ms-2" @onclick="LoadTestData">
+                Load Test Data
+            </button>
         </div>
     </div>
 
-    @if (!string.IsNullOrEmpty(errorMessage))
+    @if (!string.IsNullOrEmpty(_errorMessage))
     {
         <div class="alert alert-danger mt-4" role="alert">
-            @errorMessage
+            @_errorMessage
         </div>
     }
 
-    @if (catalog != null && catalog.products.Any())
+    @if (_catalog != null && _catalog.products.Any())
     {
         <div class="mt-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h3>Products Found (@catalog.products.Count)</h3>
-                <select class="form-select w-auto" @bind="selectedSortOrder" @bind:after="ApplySort">
+                <h3>Products Found (@_catalog.products.Count)</h3>
+                <select class="form-select w-auto" @bind="_selectedSortOrder" @bind:after="ApplySort">
                     @foreach (var sortOrder in Enum.GetValues<SortOrderType>())
                     {
                         <option value="@sortOrder">@GetSortOrderLabel(sortOrder)</option>
@@ -72,19 +75,26 @@
             </div>
 
             <div class="row">
-                @foreach (var product in catalog.products)
+                @foreach (var product in _catalog.products)
                 {
                     <div class="col-md-6 col-lg-4 mb-4">
                         <div class="card h-100">
                             <div class="card-body">
                                 <h5 class="card-title">@product.Name</h5>
                                 <p class="card-text">
-                                    <strong>Original Price:</strong> €@product.OriginalPrice.ToString("F2")<br/>
-                                    <strong>Min Range Price:</strong> €@product.MinRangePrice.ToString("F2")<br/>
+                                    <strong class="text-muted text-decoration-line-through">€@product.OriginalPrice.ToString("F2")</strong><br/>
                                     @if (product.DiscountPrice.HasValue)
                                     {
-                                        <strong class="text-danger">Discount Price:</strong> <span class="text-danger">€@product.DiscountPrice.Value.ToString("F2")</span><br/>
-                                        <span class="badge bg-success">Save €@((product.OriginalPrice - product.DiscountPrice.Value).ToString("F2"))</span>
+                                        <strong class="text-danger fs-5">€@product.MinRangePrice.ToString("F2") - €@product.DiscountPrice.Value.ToString("F2")</strong><br/>
+                                        <span class="badge bg-success mt-2">@CalculateDiscountPercentage(product.OriginalPrice, product.MinRangePrice)% OFF</span>
+                                    }
+                                    else
+                                    {
+                                        <strong class="text-danger fs-5">€@product.MinRangePrice.ToString("F2")</strong><br/>
+                                        @if (product.MinRangePrice < product.OriginalPrice)
+                                        {
+                                            <span class="badge bg-success mt-2">@CalculateDiscountPercentage(product.OriginalPrice, product.MinRangePrice)% OFF</span>
+                                        }
                                     }
                                 </p>
                                 <a href="@product.Url" target="_blank" class="btn btn-sm btn-primary">View Product</a>
@@ -98,47 +108,47 @@
 </div>
 
 @code {
-    private InputCountry selectedCountry = InputCountry.Cz;
-    private InputGender selectedGender = InputGender.Mens;
-    private SortOrderType selectedSortOrder = SortOrderType.PriceAscending;
-    private Catalog? catalog;
-    private bool isLoading = false;
-    private string errorMessage = string.Empty;
+    private InputCountry _selectedCountry = InputCountry.Cz;
+    private InputGender _selectedGender = InputGender.Mens;
+    private SortOrderType _selectedSortOrder = SortOrderType.PriceAscending;
+    private Catalog? _catalog;
+    private bool _isLoading = false;
+    private string _errorMessage = string.Empty;
 
     private async Task SearchProducts()
     {
-        isLoading = true;
-        errorMessage = string.Empty;
-        catalog = null;
+        _isLoading = true;
+        _errorMessage = string.Empty;
+        _catalog = null;
         StateHasChanged();
 
         try
         {
             // Convert enum to lowercase string for API
-            string country = selectedCountry.ToString().ToLower();
-            string gender = selectedGender.ToString().ToLower();
+            string country = _selectedCountry.ToString().ToLower();
+            string gender = _selectedGender.ToString().ToLower();
 
             var htmlContent = await Fetcher.FetchHtmlAsync(country, "en", gender);
             var products = Parser.ParseProducts(htmlContent);
-            catalog = new Catalog(products);
-            catalog.SortProducts(selectedSortOrder);
+            _catalog = new Catalog(products);
+            _catalog.SortProducts(_selectedSortOrder);
         }
         catch (Exception ex)
         {
-            errorMessage = $"Error: {ex.Message}";
+            _errorMessage = $"Error: {ex.Message}";
         }
         finally
         {
-            isLoading = false;
+            _isLoading = false;
             StateHasChanged();
         }
     }
 
     private void ApplySort()
     {
-        if (catalog != null)
+        if (_catalog != null)
         {
-            catalog.SortProducts(selectedSortOrder);
+            _catalog.SortProducts(_selectedSortOrder);
         }
     }
 
@@ -148,8 +158,93 @@
         {
             SortOrderType.PriceAscending => "Price: Low to High",
             SortOrderType.PriceDescending => "Price: High to Low",
-            SortOrderType.Discount => "Highest Discount",
+            SortOrderType.DiscountByAmount => "Discount: Amount saved",
+            SortOrderType.DiscountByPercentage => "Discount: % saved",
             _ => sortOrder.ToString()
         };
+    }
+
+    private int CalculateDiscountPercentage(decimal originalPrice, decimal discountedPrice)
+    {
+        if (originalPrice == 0) return 0;
+        var discount = ((originalPrice - discountedPrice) / originalPrice) * 100;
+        return (int)Math.Round(discount);
+    }
+
+    private string GetCountryLabel(InputCountry country)
+    {
+        return country switch
+        {
+            InputCountry.At => "🇦🇹 Austria",
+            InputCountry.Be => "🇧🇪 Belgium",
+            InputCountry.Ca => "🇨🇦 Canada",
+            InputCountry.Cz => "🇨🇿 Czech Republic",
+            InputCountry.Dk => "🇩🇰 Denmark",
+            InputCountry.Fi => "🇫🇮 Finland",
+            InputCountry.Fr => "🇫🇷 France",
+            InputCountry.De => "🇩🇪 Germany",
+            InputCountry.Ie => "🇮🇪 Ireland",
+            InputCountry.It => "🇮🇹 Italy",
+            InputCountry.No => "🇳🇴 Norway",
+            InputCountry.Pl => "🇵🇱 Poland",
+            InputCountry.Es => "🇪🇸 Spain",
+            InputCountry.Se => "🇸🇪 Sweden",
+            InputCountry.Ch => "🇨🇭 Switzerland",
+            InputCountry.Nl => "🇳🇱 Netherlands",
+            InputCountry.Gb => "🇬🇧 United Kingdom",
+            InputCountry.Us => "🇺🇸 United States",
+            _ => country.ToString()
+        };
+    }
+
+    private void LoadTestData()
+    {
+        var testProducts = new List<Product>
+        {
+            new Product
+            {
+                Name = "Beta AR Jacket Men's",
+                Url = "https://arcteryx.com/cz/en/shop/mens/beta-ar-jacket",
+                OriginalPrice = 750.00m,
+                MinRangePrice = 525.00m,
+                DiscountPrice = 600.00m
+            },
+            new Product
+            {
+                Name = "Atom LT Hoody Men's",
+                Url = "https://arcteryx.com/cz/en/shop/mens/atom-lt-hoody",
+                OriginalPrice = 350.00m,
+                MinRangePrice = 245.00m,
+                DiscountPrice = 280.00m
+            },
+            new Product
+            {
+                Name = "Gamma MX Hoody Men's",
+                Url = "https://arcteryx.com/cz/en/shop/mens/gamma-mx-hoody",
+                OriginalPrice = 420.00m,
+                MinRangePrice = 294.00m,
+                DiscountPrice = null
+            },
+            new Product
+            {
+                Name = "Proton LT Hoody Men's",
+                Url = "https://arcteryx.com/cz/en/shop/mens/proton-lt-hoody",
+                OriginalPrice = 380.00m,
+                MinRangePrice = 180.00m,
+                DiscountPrice = 255.00m
+            },
+            new Product
+            {
+                Name = "Cerium LT Hoody Men's",
+                Url = "https://arcteryx.com/cz/en/shop/mens/cerium-lt-hoody",
+                OriginalPrice = 450.00m,
+                MinRangePrice = 315.00m,
+                DiscountPrice = 360.00m
+            }
+        };
+
+        _catalog = new Catalog(testProducts);
+        _catalog.SortProducts(_selectedSortOrder);
+        _errorMessage = string.Empty;
     }
 }

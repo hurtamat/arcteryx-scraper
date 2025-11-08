@@ -17,8 +17,8 @@ public class Catalog
         {
             SortOrderType.PriceAscending => products.OrderBy(p => p.MinRangePrice).ToList(),
             SortOrderType.PriceDescending => products.OrderByDescending(p => p.MinRangePrice).ToList(),
-            SortOrderType.Discount => products.OrderByDescending(p =>
-                p.DiscountPrice.HasValue ? (p.OriginalPrice - p.DiscountPrice.Value) : 0).ToList(),
+            SortOrderType.DiscountByAmount => products.OrderByDescending(p => p.OriginalPrice - p.MinRangePrice).ToList(),
+            SortOrderType.DiscountByPercentage => products.OrderByDescending(p => (p.OriginalPrice - p.MinRangePrice)/p.OriginalPrice*100).ToList(),
             _ => products
         };
     }

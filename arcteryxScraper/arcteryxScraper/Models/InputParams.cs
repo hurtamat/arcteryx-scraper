@@ -8,12 +8,13 @@ public enum InputCountry
 
 public enum InputGender
 {
-    Mens, Womans,
+    Mens, Womens,
 }
 
 public enum SortOrderType
 {
     PriceAscending,
     PriceDescending,
-    Discount
+    DiscountByAmount,
+    DiscountByPercentage
 }
