@@ -82,15 +82,15 @@
                             <div class="card-body">
                                 <h5 class="card-title">@product.Name</h5>
                                 <p class="card-text">
-                                    <strong class="text-muted text-decoration-line-through">€@product.OriginalPrice.ToString("F2")</strong><br/>
+                                    <strong class="text-muted text-decoration-line-through">@product.Currency@product.OriginalPrice.ToString("F2")</strong><br/>
                                     @if (product.DiscountPrice.HasValue)
                                     {
-                                        <strong class="text-danger fs-5">€@product.MinRangePrice.ToString("F2") - €@product.DiscountPrice.Value.ToString("F2")</strong><br/>
+                                        <strong class="text-danger fs-5">@product.Currency@product.MinRangePrice.ToString("F2") - @product.Currency@product.DiscountPrice.Value.ToString("F2")</strong><br/>
                                         <span class="badge bg-success mt-2">@CalculateDiscountPercentage(product.OriginalPrice, product.MinRangePrice)% OFF</span>
                                     }
                                     else
                                     {
-                                        <strong class="text-danger fs-5">€@product.MinRangePrice.ToString("F2")</strong><br/>
+                                        <strong class="text-danger fs-5">@product.Currency@product.MinRangePrice.ToString("F2")</strong><br/>
                                         @if (product.MinRangePrice < product.OriginalPrice)
                                         {
                                             <span class="badge bg-success mt-2">@CalculateDiscountPercentage(product.OriginalPrice, product.MinRangePrice)% OFF</span>
@@ -204,7 +204,8 @@
             new Product
             {
                 Name = "Beta AR Jacket Men's",
-                Url = "https://arcteryx.com/cz/en/shop/mens/beta-ar-jacket",
+                Url = "https://outlet.arcteryx.com/cz/en/shop/mens/beta-ar-jacket",
+                Currency = "€",
                 OriginalPrice = 750.00m,
                 MinRangePrice = 525.00m,
                 DiscountPrice = 600.00m
@@ -212,7 +213,8 @@
             new Product
             {
                 Name = "Atom LT Hoody Men's",
-                Url = "https://arcteryx.com/cz/en/shop/mens/atom-lt-hoody",
+                Url = "https://outlet.arcteryx.com/cz/en/shop/mens/atom-lt-hoody",
+                Currency = "$",
                 OriginalPrice = 350.00m,
                 MinRangePrice = 245.00m,
                 DiscountPrice = 280.00m
@@ -220,15 +222,17 @@
             new Product
             {
                 Name = "Gamma MX Hoody Men's",
-                Url = "https://arcteryx.com/cz/en/shop/mens/gamma-mx-hoody",
-                OriginalPrice = 420.00m,
-                MinRangePrice = 294.00m,
+                Url = "https://outlet.arcteryx.com/cz/en/shop/mens/gamma-mx-hoody",
+                Currency = "CHF",
+                OriginalPrice = 1199.00m,
+                MinRangePrice = 839.30m,
                 DiscountPrice = null
             },
             new Product
             {
                 Name = "Proton LT Hoody Men's",
-                Url = "https://arcteryx.com/cz/en/shop/mens/proton-lt-hoody",
+                Url = "https://outlet.arcteryx.com/cz/en/shop/mens/proton-lt-hoody",
+                Currency = "€",
                 OriginalPrice = 380.00m,
                 MinRangePrice = 180.00m,
                 DiscountPrice = 255.00m
@@ -236,10 +240,20 @@
             new Product
             {
                 Name = "Cerium LT Hoody Men's",
-                Url = "https://arcteryx.com/cz/en/shop/mens/cerium-lt-hoody",
+                Url = "https://outlet.arcteryx.com/cz/en/shop/mens/cerium-lt-hoody",
+                Currency = "$",
                 OriginalPrice = 450.00m,
                 MinRangePrice = 315.00m,
                 DiscountPrice = 360.00m
+            },
+            new Product
+            {
+                Name = "Beta SV Jacket Men's",
+                Url = "https://outlet.arcteryx.com/no/en/shop/mens/beta-sv-jacket",
+                Currency = "kr",
+                OriginalPrice = 10999.00m,
+                MinRangePrice = 7699.30m,
+                DiscountPrice = 8799.00m
             }
         };
 
