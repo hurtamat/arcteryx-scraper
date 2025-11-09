@@ -8,9 +8,7 @@
 <PageTitle>Arc'teryx Scraper</PageTitle>
 
 <div class="container mt-5">
-    <h1 class="display-4">Arc'teryx Outlet Scraper</h1>
-    <p class="lead">Search for Arc'teryx products by country and gender</p>
-
+    <h1 class="display-4">Arc'teryx Outlet</h1>
     <div class="card mt-4">
         <div class="card-body">
             <h5 class="card-title">Search Parameters</h5>
@@ -65,7 +63,7 @@
     {
         <div class="mt-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h3>Products Found (@_catalog.products.Count)</h3>
+                <h3>@_catalog.products.Count</h3>
                 <select class="form-select w-auto" @bind="_selectedSortOrder" @bind:after="ApplySort">
                     @foreach (var sortOrder in Enum.GetValues<SortOrderType>())
                     {
@@ -129,7 +127,7 @@
             string gender = _selectedGender.ToString().ToLower();
 
             var htmlContent = await Fetcher.FetchHtmlAsync(country, "en", gender);
-            var products = Parser.ParseProducts(htmlContent);
+            var products = Parser.ParseProducts(htmlContent, _selectedCountry);
             _catalog = new Catalog(products);
             _catalog.SortProducts(_selectedSortOrder);
         }
