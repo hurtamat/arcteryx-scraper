@@ -11,10 +11,11 @@ public class HtmlParser
     /// </summary>
     /// <param name="htmlContent">The HTML content to parse</param>
     /// <param name="country">The country to use for currency parsing</param>
-    public List<Product> ParseProducts(string htmlContent, InputCountry country)
+    public Catalog ParseProducts(string htmlContent, InputCountry country)
     {
         var products = new List<Product>();
         var currencyParser = CurrencyParserFactory.CreateParser(country);
+        string detectedCurrency = string.Empty;
 
         // Pattern to match product tiles - we look for the qa--grid-product-tile sections
         var productTilePattern = @"qa--grid-product-tile.*?(?=qa--grid-product-tile|$)";
@@ -28,10 +29,16 @@ public class HtmlParser
 
             try
             {
-                var product = ExtractProductFromTile(tileHtml, currencyParser);
+                var (product, currency) = ExtractProductFromTile(tileHtml, currencyParser);
                 if (product != null)
                 {
                     products.Add(product);
+
+                    // Use the first detected currency for the entire catalog
+                    if (string.IsNullOrEmpty(detectedCurrency) && !string.IsNullOrEmpty(currency))
+                    {
+                        detectedCurrency = currency;
+                    }
                 }
             }
             catch (Exception ex)
@@ -40,7 +47,7 @@ public class HtmlParser
             }
         }
 
-        return products;
+        return new Catalog(products, detectedCurrency);
     }
 
     /// <summary>
@@ -48,7 +55,8 @@ public class HtmlParser
     /// </summary>
     /// <param name="tileHtml">The HTML content of the product tile</param>
     /// <param name="currencyParser">The currency parser to use for this country</param>
-    private Product? ExtractProductFromTile(string tileHtml, ICurrencyParser currencyParser)
+    /// <returns>A tuple containing the product and detected currency</returns>
+    private (Product? product, string currency) ExtractProductFromTile(string tileHtml, ICurrencyParser currencyParser)
     {
         // Extract product name - pattern: data-component="body3">Product Name</div>
         var namePattern = @"data-component=""body3"">([^<]+)</div>";
@@ -56,13 +64,15 @@ public class HtmlParser
 
         if (!nameMatch.Success)
         {
-            return null; // Skip if we can't find a product name
+            return (null, string.Empty); // Skip if we can't find a product name
         }
 
         var product = new Product
         {
             Name = nameMatch.Groups[1].Value.Trim()
         };
+
+        string detectedCurrency = string.Empty;
 
         // Extract product URL - pattern: qa--product-tile__link" href="/cz/en/shop/..."
         var urlPattern = @"qa--product-tile__link""\s+href=""([^""]+)""";
@@ -84,7 +94,7 @@ public class HtmlParser
         if (originalPriceMatch.Success)
         {
             var (currency, price) = currencyParser.ParsePriceWithCurrency(originalPriceMatch.Groups[1].Value);
-            product.Currency = currency;
+            detectedCurrency = currency;
             product.OriginalPrice = price;
         }
 
@@ -95,9 +105,9 @@ public class HtmlParser
         if (minRangePriceMatch.Success)
         {
             var (currency, price) = currencyParser.ParsePriceWithCurrency(minRangePriceMatch.Groups[1].Value);
-            if (string.IsNullOrEmpty(product.Currency))
+            if (string.IsNullOrEmpty(detectedCurrency))
             {
-                product.Currency = currency;
+                detectedCurrency = currency;
             }
             product.MinRangePrice = price;
         }
@@ -109,13 +119,13 @@ public class HtmlParser
         if (discountPriceMatch.Success)
         {
             var (currency, price) = currencyParser.ParsePriceWithCurrency(discountPriceMatch.Groups[1].Value);
-            if (string.IsNullOrEmpty(product.Currency))
+            if (string.IsNullOrEmpty(detectedCurrency))
             {
-                product.Currency = currency;
+                detectedCurrency = currency;
             }
             product.DiscountPrice = price;
         }
 
-        return product;
+        return (product, detectedCurrency);
     }
 }

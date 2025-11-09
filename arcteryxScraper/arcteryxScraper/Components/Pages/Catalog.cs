@@ -1,2 +1,0 @@
-namespace arcteryxScraper.Components.Pages;
-

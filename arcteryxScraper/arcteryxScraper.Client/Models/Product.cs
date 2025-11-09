@@ -1,4 +1,4 @@
-namespace arcteryxScraper;
+namespace arcteryxScraper.Client.Models;
 
 public class Product
 {

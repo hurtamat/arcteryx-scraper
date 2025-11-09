@@ -1,0 +1,20 @@
+namespace arcteryxScraper.Client.Models;
+
+public enum InputCountry
+{
+    At, Be, Ca, Cz, Dk, Fi, Fr, De, Ie,
+    It, No, Pl, Es, Se, Ch, Nl, Gb, Us,
+}
+
+public enum InputGender
+{
+    Mens, Womens,
+}
+
+public enum SortOrderType
+{
+    PriceAscending,
+    PriceDescending,
+    DiscountByAmount,
+    DiscountByPercentage
+}

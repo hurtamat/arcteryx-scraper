@@ -8,6 +8,12 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
+// Add API controllers
+builder.Services.AddControllers();
+
+// Add memory cache
+builder.Services.AddMemoryCache();
+
 // Register services
 builder.Services.AddScoped<HtmlFetcher>();
 builder.Services.AddScoped<HtmlParser>();
@@ -31,6 +37,10 @@ app.UseHttpsRedirection();
 app.UseAntiforgery();
 
 app.MapStaticAssets();
+
+// Map API controllers
+app.MapControllers();
+
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()

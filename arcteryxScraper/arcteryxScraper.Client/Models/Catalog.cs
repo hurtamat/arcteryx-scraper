@@ -1,6 +1,4 @@
-using System.Linq;
-
-namespace arcteryxScraper.Models;
+namespace arcteryxScraper.Client.Models;
 
 public class Catalog
 {
@@ -23,21 +21,5 @@ public class Catalog
             SortOrderType.DiscountByPercentage => products.OrderByDescending(p => (p.OriginalPrice - p.MinRangePrice)/p.OriginalPrice*100).ToList(),
             _ => products
         };
-    }
-
-    public void DisplayProducts()
-    {
-        Console.WriteLine($"\n{'='} PARSED PRODUCTS {'='}\n");
-        Console.WriteLine($"Total products found: {products.Count}\n");
-
-        foreach (var product in products)
-        {
-            Console.WriteLine($"{product.Name}\n  URL: {product.Url}\n  Original: {Currency}{product.OriginalPrice:F2}\n  Min Range: {Currency}{product.MinRangePrice:F2}");
-            if (product.DiscountPrice.HasValue)
-            {
-                Console.WriteLine($" - {Currency}{product.DiscountPrice.Value:F2}");
-            }
-            Console.WriteLine();
-        }
     }
 }
